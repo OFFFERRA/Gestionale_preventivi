@@ -83,42 +83,7 @@
     <!-- ======= FORM NUOVO PREVENTIVO (modal) ======= -->
     <button id="openModalBtn" class="btn">Aggiungi Preventivo</button>
 
-    <style>
-    /* Modal styles */
-    .modal {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 1000;
-    }
-    .modal[aria-hidden="true"] { display: none; }
-    .modal-content {
-        background: #fff;
-        padding: 1rem 1.5rem;
-        max-width: 900px;
-        width: 95%;
-        max-height: 90vh;
-        overflow: auto;
-        border-radius: 6px;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-    }
-    .close {
-        float: right;
-        font-size: 1.4rem;
-        border: none;
-        background: transparent;
-        cursor: pointer;
-    }
-    .btn { padding: 0.5rem 1rem; cursor: pointer; }
-    .modal form div { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-    .modal form > div > div { flex: 1 1 200px; }
-    </style>
+    <!-- Stili del modal spostati in static/style.css -->
 
     <div id="preventivoModal" class="modal" aria-hidden="true">
         <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
@@ -232,7 +197,10 @@
                     </div>
                 </div>
 
-                <button type="submit">Inserisci Preventivo</button>
+                <div class="form-actions">
+                    <button type="button" id="clearFormBtn" class="btn btn-outline">Svuota Campi</button>
+                    <button type="submit">Inserisci Preventivo</button>
+                </div>
             </form>
         </div>
     </div>
@@ -242,6 +210,7 @@
         var openBtn = document.getElementById('openModalBtn');
         var modal = document.getElementById('preventivoModal');
         var closeBtn = document.getElementById('closeModalBtn');
+        var clearBtn = document.getElementById('clearFormBtn');
         var firstInput = document.querySelector('#addPreventivoForm input');
 
         function openModal(){
@@ -257,6 +226,17 @@
 
         openBtn.addEventListener('click', function(e){ e.preventDefault(); openModal(); });
         closeBtn.addEventListener('click', function(e){ e.preventDefault(); closeModal(); });
+
+        if (clearBtn) {
+            clearBtn.addEventListener('click', function(e){
+                e.preventDefault();
+                var form = document.getElementById('addPreventivoForm');
+                if (form) {
+                    form.reset();
+                    if (firstInput) firstInput.focus();
+                }
+            });
+        }
 
         // click outside content closes
         modal.addEventListener('click', function(e){ if(e.target === modal) closeModal(); });
