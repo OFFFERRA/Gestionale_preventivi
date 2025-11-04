@@ -320,3 +320,92 @@ input[type=number] {
 .form-actions button {
   margin-top: 0;
 }
+
+/* ==== GRIGLIA RISULTATI (CARD) ==== */
+.results-grid {
+   display: grid;
+   grid-template-columns: repeat(auto-fill, minmax(260px, 340px));
+   gap: 16px;
+   margin-top: 24px;
+   justify-content: center;
+ }
+
+.result-card {
+   background: #fff;
+   border-radius: 8px;
+   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+   border: 1px solid #e6eaf3;
+   padding: 14px 16px;
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+   transition: box-shadow 0.2s ease, transform 0.08s ease;
+   max-width: 340px;
+ }
+
+.result-card:hover {
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+  transform: translateY(-1px);
+}
+
+.card-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-line .label {
+  color: #555;
+  font-weight: 600;
+}
+
+.card-line .value {
+  color: #2e3b55;
+}
+
+.card-line.row-actions {
+  gap: 12px;
+}
+
+.code-val {
+  background: #f2f6fc;
+  color: #2e3b55;
+  border: 1px solid #e6eaf3;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-weight: 600;
+}
+
+/* small button variant */
+.btn-sm {
+  padding: 8px 12px;
+  font-size: 0.9rem;
+}
+
+/* ==== DETTAGLI MODAL GRID ==== */
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 16px;
+  margin-top: 10px;
+}
+
+@media (max-width: 768px) {
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.details-grid > div {
+  background: #f7faff;
+  border: 1px solid #e6eaf3;
+  border-radius: 6px;
+  padding: 10px 12px;
+}
+
+.details-grid label {
+  display: block;
+  font-weight: 600;
+  color: #3578d4;
+  margin-bottom: 6px;
+}

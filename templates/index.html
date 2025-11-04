@@ -25,60 +25,43 @@
         <button type="submit">Cerca</button>
     </form>
 
-    <!-- ======= TABELLA PREVENTIVI ======= -->
-    <table id="preventiviTable" data-has-results="{% if preventivi %}true{% else %}false{% endif %}">
-        <tr>
-            <th>Nome</th>
-            <th>Cognome</th>
-            <th>Data Nascita</th>
-            <th>Codice Fiscale</th>
-            <th>Numero Ordine</th>
-            <th>Tipo</th>
-            <th>Codice</th>
-            <th>Descrizione</th>
-            <th>Unità Misura</th>
-            <th>Quantità</th>
-            <th>Prezzo Unitario</th>
-            <th>Prezzo Totale</th>
-            <th>MR Prezzo Unitario</th>
-            <th>MR Prezzo Totale</th>
-            <th>MR Ricarico</th>
-            <th>Mano R Prezzo Unitario</th>
-            <th>Mano R Prezzo Totale</th>
-            <th>Mano R Ricarico</th>
-            <th>PM Prezzo Unitario</th>
-            <th>PM Prezzo Totale</th>
-            <th>CM Prezzo Unitario</th>
-            <th>CM Prezzo Totale</th>
-        </tr>
-
-        {% for preventivo in preventivi %}
-        <tr>
-            <td>{{ preventivo.nomeCliente }}</td>
-            <td>{{ preventivo.cognomeCliente }}</td>
-            <td>{{ preventivo.nascitaCliente }}</td>
-            <td>{{ preventivo.codiceFiscale }}</td>
-            <td>{{ preventivo.numeroOrdine }}</td>
-            <td>{{ preventivo.tipo }}</td>
-            <td>{{ preventivo.codice }}</td>
-            <td>{{ preventivo.descrizione }}</td>
-            <td>{{ preventivo.unitaMisura }}</td>
-            <td>{{ preventivo.quantita }}</td>
-            <td>{{ preventivo.prezzoUnitario }}</td>
-            <td>{{ preventivo.prezzoTotale }}</td>
-            <td>{{ preventivo.MRprezzoUnitario }}</td>
-            <td>{{ preventivo.MRprezzoTotale }}</td>
-            <td>{{ preventivo.MRricarico }}</td>
-            <td>{{ preventivo.manoRprezzoUnitario }}</td>
-            <td>{{ preventivo.manoRprezzoTotale }}</td>
-            <td>{{ preventivo.manoRricarico }}</td>
-            <td>{{ preventivo.PMprezzoUnitario }}</td>
-            <td>{{ preventivo.PMprezzoTotale }}</td>
-            <td>{{ preventivo.CMprezzoUnitario }}</td>
-            <td>{{ preventivo.CMprezzoTotale }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <!-- ======= RISULTATI RICERCA (Griglia compatta) ======= -->
+    <div id="risultatiGrid" class="results-grid" data-has-results="{% if preventivi %}true{% else %}false{% endif %}">
+      {% for preventivo in preventivi %}
+      <div class="result-card"
+           data-numero-ordine="{{ preventivo.numeroOrdine }}"
+           data-nome-cliente="{{ preventivo.nomeCliente }}"
+           data-cognome-cliente="{{ preventivo.cognomeCliente }}"
+           data-nascita-cliente="{{ preventivo.nascitaCliente }}"
+           data-codice-fiscale="{{ preventivo.codiceFiscale }}"
+           data-tipo="{{ preventivo.tipo }}"
+           data-codice="{{ preventivo.codice }}"
+           data-descrizione="{{ preventivo.descrizione }}"
+           data-unita-misura="{{ preventivo.unitaMisura }}"
+           data-quantita="{{ preventivo.quantita }}"
+           data-prezzo-unitario="{{ preventivo.prezzoUnitario }}"
+           data-prezzo-totale="{{ preventivo.prezzoTotale }}"
+           data-mr-prezzo-unitario="{{ preventivo.MRprezzoUnitario }}"
+           data-mr-prezzo-totale="{{ preventivo.MRprezzoTotale }}"
+           data-mr-ricarico="{{ preventivo.MRricarico }}"
+           data-mano-r-prezzo-unitario="{{ preventivo.manoRprezzoUnitario }}"
+           data-mano-r-prezzo-totale="{{ preventivo.manoRprezzoTotale }}"
+           data-mano-r-ricarico="{{ preventivo.manoRricarico }}"
+           data-pm-prezzo-unitario="{{ preventivo.PMprezzoUnitario }}"
+           data-pm-prezzo-totale="{{ preventivo.PMprezzoTotale }}"
+           data-cm-prezzo-unitario="{{ preventivo.CMprezzoUnitario }}"
+           data-cm-prezzo-totale="{{ preventivo.CMprezzoTotale }}"
+      >
+        <div class="card-line"><span class="label">Ordine</span><span class="value">{{ preventivo.numeroOrdine }}</span></div>
+        <div class="card-line"><span class="label">Tipo</span><span class="value">{{ preventivo.tipo }}</span></div>
+        <div class="card-line row-actions">
+          <span class="label">Codice</span>
+          <span class="code-val">{{ preventivo.codice }}</span>
+          <button type="button" class="btn btn-outline btn-sm view-details-btn">Dettagli</button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
 
     <!-- ======= FORM NUOVO PREVENTIVO (modal) ======= -->
     <button id="openModalBtn" class="btn">Aggiungi Preventivo</button>
@@ -205,6 +188,38 @@
         </div>
     </div>
 
+    <!-- ======= MODAL DETTAGLI PREVENTIVO ======= -->
+    <div id="dettagliModal" class="modal" aria-hidden="true">
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="dettagliTitle">
+            <button id="closeDettagliBtn" class="close" aria-label="Chiudi">&times;</button>
+            <h2 id="dettagliTitle">Dettaglio Preventivo</h2>
+            <div class="details-grid">
+                <div><label>Numero Ordine</label><div id="det-numeroOrdine"></div></div>
+                <div><label>Nome</label><div id="det-nomeCliente"></div></div>
+                <div><label>Cognome</label><div id="det-cognomeCliente"></div></div>
+                <div><label>Data Nascita</label><div id="det-nascitaCliente"></div></div>
+                <div><label>Codice Fiscale</label><div id="det-codiceFiscale"></div></div>
+                <div><label>Tipo</label><div id="det-tipo"></div></div>
+                <div><label>Codice</label><div id="det-codice"></div></div>
+                <div><label>Descrizione</label><div id="det-descrizione"></div></div>
+                <div><label>Unità Misura</label><div id="det-unitaMisura"></div></div>
+                <div><label>Quantità</label><div id="det-quantita"></div></div>
+                <div><label>Prezzo Unitario</label><div id="det-prezzoUnitario"></div></div>
+                <div><label>Prezzo Totale</label><div id="det-prezzoTotale"></div></div>
+                <div><label>MR Prezzo Unitario</label><div id="det-mrPrezzoUnitario"></div></div>
+                <div><label>MR Prezzo Totale</label><div id="det-mrPrezzoTotale"></div></div>
+                <div><label>MR Ricarico</label><div id="det-mrRicarico"></div></div>
+                <div><label>Mano R Prezzo Unitario</label><div id="det-manoRprezzoUnitario"></div></div>
+                <div><label>Mano R Prezzo Totale</label><div id="det-manoRprezzoTotale"></div></div>
+                <div><label>Mano R Ricarico</label><div id="det-manoRricarico"></div></div>
+                <div><label>PM Prezzo Unitario</label><div id="det-pmPrezzoUnitario"></div></div>
+                <div><label>PM Prezzo Totale</label><div id="det-pmPrezzoTotale"></div></div>
+                <div><label>CM Prezzo Unitario</label><div id="det-cmPrezzoUnitario"></div></div>
+                <div><label>CM Prezzo Totale</label><div id="det-cmPrezzoTotale"></div></div>
+            </div>
+        </div>
+    </div>
+
     <script>
     (function(){
         var openBtn = document.getElementById('openModalBtn');
@@ -221,11 +236,11 @@
         function closeModal(){
             modal.setAttribute('aria-hidden', 'true');
             modal.style.display = 'none';
-            openBtn.focus();
+            openBtn && openBtn.focus();
         }
 
-        openBtn.addEventListener('click', function(e){ e.preventDefault(); openModal(); });
-        closeBtn.addEventListener('click', function(e){ e.preventDefault(); closeModal(); });
+        if (openBtn) openBtn.addEventListener('click', function(e){ e.preventDefault(); openModal(); });
+        if (closeBtn) closeBtn.addEventListener('click', function(e){ e.preventDefault(); closeModal(); });
 
         if (clearBtn) {
             clearBtn.addEventListener('click', function(e){
@@ -239,30 +254,115 @@
         }
 
         // click outside content closes
-        modal.addEventListener('click', function(e){ if(e.target === modal) closeModal(); });
+        if (modal) modal.addEventListener('click', function(e){ if(e.target === modal) closeModal(); });
         // ESC closes
         document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && modal.getAttribute('aria-hidden') === 'false') closeModal(); });
     })();
     </script>
 
-    <!-- JS per mostrare/nascondere la tabella dopo la ricerca -->
+    <!-- JS per griglia risultati e modale dettagli -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        var table = document.getElementById('preventiviTable');
-        if (!table) return;
+        var grid = document.getElementById('risultatiGrid');
+        var dettagliModal = document.getElementById('dettagliModal');
+        var closeDettagliBtn = document.getElementById('closeDettagliBtn');
 
-        var hasResults = table.dataset.hasResults === 'true';
-        if (!hasResults) {
-            table.style.display = 'none';
+        if (grid) {
+            var hasResults = grid.dataset.hasResults === 'true';
+            if (!hasResults) {
+                grid.style.display = 'none';
+            }
         }
 
         var searchForm = document.querySelector('.search-form');
-        if (searchForm) {
+        if (searchForm && grid) {
             searchForm.addEventListener('submit', function() {
-                // Mostra la tabella al submit (utile se si vuole mostrare anche prima del reload)
-                table.style.display = 'table';
+                grid.style.display = 'grid';
             });
         }
+
+        function openDettagli(data) {
+            var map = {
+                'det-numeroOrdine': data.numeroOrdine,
+                'det-nomeCliente': data.nomeCliente,
+                'det-cognomeCliente': data.cognomeCliente,
+                'det-nascitaCliente': data.nascitaCliente,
+                'det-codiceFiscale': data.codiceFiscale,
+                'det-tipo': data.tipo,
+                'det-codice': data.codice,
+                'det-descrizione': data.descrizione,
+                'det-unitaMisura': data.unitaMisura,
+                'det-quantita': data.quantita,
+                'det-prezzoUnitario': data.prezzoUnitario,
+                'det-prezzoTotale': data.prezzoTotale,
+                'det-mrPrezzoUnitario': data.mrPrezzoUnitario,
+                'det-mrPrezzoTotale': data.mrPrezzoTotale,
+                'det-mrRicarico': data.mrRicarico,
+                'det-manoRprezzoUnitario': data.manoRprezzoUnitario,
+                'det-manoRprezzoTotale': data.manoRprezzoTotale,
+                'det-manoRricarico': data.manoRricarico,
+                'det-pmPrezzoUnitario': data.pmPrezzoUnitario,
+                'det-pmPrezzoTotale': data.pmPrezzoTotale,
+                'det-cmPrezzoUnitario': data.cmPrezzoUnitario,
+                'det-cmPrezzoTotale': data.cmPrezzoTotale
+            };
+            Object.keys(map).forEach(function(id){
+                var el = document.getElementById(id);
+                if (el) el.textContent = map[id] != null ? map[id] : '';
+            });
+            dettagliModal.setAttribute('aria-hidden', 'false');
+            dettagliModal.style.display = 'flex';
+        }
+
+        function closeDettagli(){
+            dettagliModal.setAttribute('aria-hidden', 'true');
+            dettagliModal.style.display = 'none';
+        }
+
+        if (grid) {
+            grid.addEventListener('click', function(e){
+                var btn = e.target.closest('.view-details-btn');
+                if (!btn) return;
+                e.preventDefault();
+                var card = btn.closest('.result-card');
+                if (!card) return;
+                var data = {
+                    numeroOrdine: card.getAttribute('data-numero-ordine'),
+                    nomeCliente: card.getAttribute('data-nome-cliente'),
+                    cognomeCliente: card.getAttribute('data-cognome-cliente'),
+                    nascitaCliente: card.getAttribute('data-nascita-cliente'),
+                    codiceFiscale: card.getAttribute('data-codice-fiscale'),
+                    tipo: card.getAttribute('data-tipo'),
+                    codice: card.getAttribute('data-codice'),
+                    descrizione: card.getAttribute('data-descrizione'),
+                    unitaMisura: card.getAttribute('data-unita-misura'),
+                    quantita: card.getAttribute('data-quantita'),
+                    prezzoUnitario: card.getAttribute('data-prezzo-unitario'),
+                    prezzoTotale: card.getAttribute('data-prezzo-totale'),
+                    mrPrezzoUnitario: card.getAttribute('data-mr-prezzo-unitario'),
+                    mrPrezzoTotale: card.getAttribute('data-mr-prezzo-totale'),
+                    mrRicarico: card.getAttribute('data-mr-ricarico'),
+                    manoRprezzoUnitario: card.getAttribute('data-mano-r-prezzo-unitario'),
+                    manoRprezzoTotale: card.getAttribute('data-mano-r-prezzo-totale'),
+                    manoRricarico: card.getAttribute('data-mano-r-ricarico'),
+                    pmPrezzoUnitario: card.getAttribute('data-pm-prezzo-unitario'),
+                    pmPrezzoTotale: card.getAttribute('data-pm-prezzo-totale'),
+                    cmPrezzoUnitario: card.getAttribute('data-cm-prezzo-unitario'),
+                    cmPrezzoTotale: card.getAttribute('data-cm-prezzo-totale')
+                };
+                openDettagli(data);
+            });
+        }
+
+        if (closeDettagliBtn) {
+            closeDettagliBtn.addEventListener('click', function(e){ e.preventDefault(); closeDettagli(); });
+        }
+        if (dettagliModal) {
+            dettagliModal.addEventListener('click', function(e){ if(e.target === dettagliModal) closeDettagli(); });
+        }
+        document.addEventListener('keydown', function(e){
+            if(e.key === 'Escape' && dettagliModal.getAttribute('aria-hidden') === 'false') closeDettagli();
+        });
     });
     </script>
 
