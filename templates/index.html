@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestione Preventivi</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <!-- ======= FORM DI RICERCA ======= -->
+    <h2>Ricerca Preventivo per Cliente</h2>
+    <form action="{{ url_for('search_cliente') }}" method="GET" class="search-form">
+        <div>
+            <div>
+                <label for="nomeCliente">Nome Cliente:</label>
+                <input type="text" id="nomeCliente" name="nomeCliente" placeholder="Inserisci nome...">
+            </div>
+
+            <div>
+                <label for="cognomeCliente">Cognome Cliente:</label>
+                <input type="text" id="cognomeCliente" name="cognomeCliente" placeholder="Inserisci cognome...">
+            </div>
+        </div>
+        <button type="submit">Cerca</button>
+    </form>
+
+    <!-- ======= TABELLA PREVENTIVI ======= -->
+    <table id="preventiviTable" data-has-results="{% if preventivi %}true{% else %}false{% endif %}">
+        <tr>
+            <th>Nome</th>
+            <th>Cognome</th>
+            <th>Data Nascita</th>
+            <th>Codice Fiscale</th>
+            <th>Numero Ordine</th>
+            <th>Tipo</th>
+            <th>Codice</th>
+            <th>Descrizione</th>
+            <th>Unità Misura</th>
+            <th>Quantità</th>
+            <th>Prezzo Unitario</th>
+            <th>Prezzo Totale</th>
+            <th>MR Prezzo Unitario</th>
+            <th>MR Prezzo Totale</th>
+            <th>MR Ricarico</th>
+            <th>Mano R Prezzo Unitario</th>
+            <th>Mano R Prezzo Totale</th>
+            <th>Mano R Ricarico</th>
+            <th>PM Prezzo Unitario</th>
+            <th>PM Prezzo Totale</th>
+            <th>CM Prezzo Unitario</th>
+            <th>CM Prezzo Totale</th>
+        </tr>
+
+        {% for preventivo in preventivi %}
+        <tr>
+            <td>{{ preventivo.nomeCliente }}</td>
+            <td>{{ preventivo.cognomeCliente }}</td>
+            <td>{{ preventivo.nascitaCliente }}</td>
+            <td>{{ preventivo.codiceFiscale }}</td>
+            <td>{{ preventivo.numeroOrdine }}</td>
+            <td>{{ preventivo.tipo }}</td>
+            <td>{{ preventivo.codice }}</td>
+            <td>{{ preventivo.descrizione }}</td>
+            <td>{{ preventivo.unitaMisura }}</td>
+            <td>{{ preventivo.quantita }}</td>
+            <td>{{ preventivo.prezzoUnitario }}</td>
+            <td>{{ preventivo.prezzoTotale }}</td>
+            <td>{{ preventivo.MRprezzoUnitario }}</td>
+            <td>{{ preventivo.MRprezzoTotale }}</td>
+            <td>{{ preventivo.MRricarico }}</td>
+            <td>{{ preventivo.manoRprezzoUnitario }}</td>
+            <td>{{ preventivo.manoRprezzoTotale }}</td>
+            <td>{{ preventivo.manoRricarico }}</td>
+            <td>{{ preventivo.PMprezzoUnitario }}</td>
+            <td>{{ preventivo.PMprezzoTotale }}</td>
+            <td>{{ preventivo.CMprezzoUnitario }}</td>
+            <td>{{ preventivo.CMprezzoTotale }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <!-- ======= FORM NUOVO PREVENTIVO (modal) ======= -->
+    <button id="openModalBtn" class="btn">Aggiungi Preventivo</button>
+
+    <style>
+    /* Modal styles */
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+    .modal[aria-hidden="true"] { display: none; }
+    .modal-content {
+        background: #fff;
+        padding: 1rem 1.5rem;
+        max-width: 900px;
+        width: 95%;
+        max-height: 90vh;
+        overflow: auto;
+        border-radius: 6px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+    .close {
+        float: right;
+        font-size: 1.4rem;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+    }
+    .btn { padding: 0.5rem 1rem; cursor: pointer; }
+    .modal form div { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .modal form > div > div { flex: 1 1 200px; }
+    </style>
+
+    <div id="preventivoModal" class="modal" aria-hidden="true">
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <button id="closeModalBtn" class="close" aria-label="Chiudi">&times;</button>
+            <h2 id="modalTitle">Inserisci Nuovo Preventivo</h2>
+            <form action="{{ url_for('add_preventivo') }}" method="POST" id="addPreventivoForm">
+                <div>
+                    <div>
+                        <label for="nomeCliente">Nome Cliente:</label>
+                        <input type="text" id="nomeCliente" name="nomeCliente" required>
+                    </div>
+
+                    <div>
+                        <label for="cognomeCliente">Cognome Cliente:</label>
+                        <input type="text" id="cognomeCliente" name="cognomeCliente" required>
+                    </div>
+
+                    <div>
+                        <label for="nascitaCliente">Data di Nascita:</label>
+                        <input type="date" id="nascitaCliente" name="nascitaCliente" required>
+                    </div>
+
+                    <div>
+                        <label for="codiceFiscale">Codice Fiscale:</label>
+                        <input type="text" id="codiceFiscale" name="codiceFiscale" required>
+                    </div>
+
+                    <div>
+                        <label for="tipo">Tipo:</label>
+                        <input type="text" id="tipo" name="tipo" required>
+                    </div>
+
+                    <div>
+                        <label for="codice">Codice:</label>
+                        <input type="number" id="codice" name="codice" required>
+                    </div>
+
+                    <div>
+                        <label for="descrizione">Descrizione:</label>
+                        <input type="text" id="descrizione" name="descrizione" required>
+                    </div>
+
+                    <div>
+                        <label for="unitaMisura">Unità Misura:</label>
+                        <input type="text" id="unitaMisura" name="unitaMisura" required>
+                    </div>
+
+                    <div>
+                        <label for="quantita">Quantità:</label>
+                        <input type="number" id="quantita" name="quantita" required>
+                    </div>
+
+                    <div>
+                        <label for="prezzoUnitario">Prezzo Unitario:</label>
+                        <input type="number" id="prezzoUnitario" name="prezzoUnitario" required>
+                    </div>
+
+                    <div>
+                        <label for="prezzoTotale">Prezzo Totale:</label>
+                        <input type="number" id="prezzoTotale" name="prezzoTotale" required>
+                    </div>
+
+                    <div>
+                        <label for="MRprezzoUnitario">MR Prezzo Unitario:</label>
+                        <input type="number" id="MRprezzoUnitario" name="MRprezzoUnitario" required>
+                    </div>
+
+                    <div>
+                        <label for="MRprezzoTotale">MR Prezzo Totale:</label>
+                        <input type="number" id="MRprezzoTotale" name="MRprezzoTotale" required>
+                    </div>
+
+                    <div>
+                        <label for="MRricarico">MR Ricarico (%):</label>
+                        <input type="number" id="MRricarico" name="MRricarico" required>
+                    </div>
+
+                    <div>
+                        <label for="manoRprezzoUnitario">Mano R Prezzo Unitario:</label>
+                        <input type="number" id="manoRprezzoUnitario" name="manoRprezzoUnitario" required>
+                    </div>
+
+                    <div>
+                        <label for="manoRprezzoTotale">Mano R Prezzo Totale:</label>
+                        <input type="number" id="manoRprezzoTotale" name="manoRprezzoTotale" required>
+                    </div>
+
+                    <div>
+                        <label for="manoRricarico">Mano R Ricarico (%):</label>
+                        <input type="number" id="manoRricarico" name="manoRricarico" required>
+                    </div>
+
+                    <div>
+                        <label for="PMprezzoUnitario">PM Prezzo Unitario:</label>
+                        <input type="number" id="PMprezzoUnitario" name="PMprezzoUnitario" required>
+                    </div>
+
+                    <div>
+                        <label for="PMprezzoTotale">PM Prezzo Totale:</label>
+                        <input type="number" id="PMprezzoTotale" name="PMprezzoTotale" required>
+                    </div>
+
+                    <div>
+                        <label for="CMprezzoUnitario">CM Prezzo Unitario:</label>
+                        <input type="number" id="CMprezzoUnitario" name="CMprezzoUnitario" required>
+                    </div>
+
+                    <div>
+                        <label for="CMprezzoTotale">CM Prezzo Totale:</label>
+                        <input type="number" id="CMprezzoTotale" name="CMprezzoTotale" required>
+                    </div>
+                </div>
+
+                <button type="submit">Inserisci Preventivo</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    (function(){
+        var openBtn = document.getElementById('openModalBtn');
+        var modal = document.getElementById('preventivoModal');
+        var closeBtn = document.getElementById('closeModalBtn');
+        var firstInput = document.querySelector('#addPreventivoForm input');
+
+        function openModal(){
+            modal.setAttribute('aria-hidden', 'false');
+            modal.style.display = 'flex';
+            if(firstInput) firstInput.focus();
+        }
+        function closeModal(){
+            modal.setAttribute('aria-hidden', 'true');
+            modal.style.display = 'none';
+            openBtn.focus();
+        }
+
+        openBtn.addEventListener('click', function(e){ e.preventDefault(); openModal(); });
+        closeBtn.addEventListener('click', function(e){ e.preventDefault(); closeModal(); });
+
+        // click outside content closes
+        modal.addEventListener('click', function(e){ if(e.target === modal) closeModal(); });
+        // ESC closes
+        document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && modal.getAttribute('aria-hidden') === 'false') closeModal(); });
+    })();
+    </script>
+
+    <!-- JS per mostrare/nascondere la tabella dopo la ricerca -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var table = document.getElementById('preventiviTable');
+        if (!table) return;
+
+        var hasResults = table.dataset.hasResults === 'true';
+        if (!hasResults) {
+            table.style.display = 'none';
+        }
+
+        var searchForm = document.querySelector('.search-form');
+        if (searchForm) {
+            searchForm.addEventListener('submit', function() {
+                // Mostra la tabella al submit (utile se si vuole mostrare anche prima del reload)
+                table.style.display = 'table';
+            });
+        }
+    });
+    </script>
+
+</body>
+</html>
